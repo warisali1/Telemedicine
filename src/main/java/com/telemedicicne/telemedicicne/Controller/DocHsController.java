@@ -255,49 +255,208 @@ private void doAuthenticate(String email, String password) {
 
 
 
+//    @PostMapping(value = "/saveVideoToken", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<String> saveVideoToken(@RequestHeader("Auth") String jwtToken, @RequestBody VideoTokenRequestDTO videoTokenRequestDTO) {
+//        // Extract username from JWT token
+//        String token = jwtToken.replace("Bearer ", "");
+//        String username = jwtHelper.getUsernameFromToken(token);
+//
+//        // Fetch authenticated user's roles
+//        Doctor authenticatedDoctor = doctorRepository.findByEmailDirect(username);
+//        HealthOfficer authenticatedHealthOfficer = healthOfficerRepository.findByEmailDirect(username);
+//
+//        // Determine if the authenticated user is a Doctor or HealthOfficer
+//        boolean isDoctor = authenticatedDoctor != null && authenticatedDoctor.getRoles().stream().anyMatch(role -> role.hasRole("DOCTOR"));
+//        boolean isHealthOfficer = authenticatedHealthOfficer != null && authenticatedHealthOfficer.getRoles().stream().anyMatch(role -> role.hasRole("HEALTH_OFFICER"));
+//
+//        Optional<Doctor> doctorOptional = doctorRepository.findById(videoTokenRequestDTO.getRefId());
+//        Optional<HealthOfficer> healthOfficerOptional = healthOfficerRepository.findById(videoTokenRequestDTO.getRefId());
+//
+//        System.out.println("referal id --------"+videoTokenRequestDTO.getRefId());
+//        System.out.println("video token ----------"+videoTokenRequestDTO.getVideoToken());
+//
+//        if (isDoctor) {
+//            if (healthOfficerOptional.isPresent()) {
+//                HealthOfficer healthOfficer = healthOfficerOptional.get();
+//                // Set the videoToken on the HealthOfficer entity
+//                healthOfficer.receiveVideoTokenFromDoctor(videoTokenRequestDTO.getVideoToken(), authenticatedDoctor);
+//                // Save the updated HealthOfficer entity
+//                healthOfficerRepository.save(healthOfficer);
+//                return ResponseEntity.ok("Video token saved successfully on HealthOfficer");
+//            } else {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("HealthOfficer not found with the given refId");
+//            }
+//        } else if (isHealthOfficer) {
+//            if (doctorOptional.isPresent()) {
+//                Doctor doctor = doctorOptional.get();
+//                // Set the videoToken on the Doctor entity
+//                doctor.receiveVideoTokenFromHealthOfficer(videoTokenRequestDTO.getVideoToken(), authenticatedHealthOfficer);
+//                // Save the updated Doctor entity
+//                doctorRepository.save(doctor);
+//                return ResponseEntity.ok("Video token saved successfully on Doctor");
+//            } else {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found with the given refId");
+//            }
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authorized");
+//        }
+//    }
+
+
+//    @PostMapping(value = "/saveVideoToken", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<String> saveVideoToken(@RequestHeader("Auth") String jwtToken, @RequestBody VideoTokenRequestDTO videoTokenRequestDTO) {
+//        // Extract username from JWT token
+//        String token = jwtToken.replace("Bearer ", "");
+//        String username = jwtHelper.getUsernameFromToken(token);
+//
+//        // Fetch authenticated user's roles
+//        Doctor authenticatedDoctor = doctorRepository.findByEmailDirect(username);
+//        HealthOfficer authenticatedHealthOfficer = healthOfficerRepository.findByEmailDirect(username);
+//
+//        // Determine if the authenticated user is a Doctor or HealthOfficer
+//        boolean isDoctor = authenticatedDoctor != null && authenticatedDoctor.getRoles().stream().anyMatch(role -> role.hasRole("DOCTOR"));
+//        boolean isHealthOfficer = authenticatedHealthOfficer != null && authenticatedHealthOfficer.getRoles().stream().anyMatch(role -> role.hasRole("HEALTH_OFFICER"));
+//
+//        Optional<Doctor> doctorOptional = doctorRepository.findById(videoTokenRequestDTO.getRefId());
+//        Optional<HealthOfficer> healthOfficerOptional = healthOfficerRepository.findById(videoTokenRequestDTO.getRefId());
+//
+//        System.out.println("Referral ID: " + videoTokenRequestDTO.getRefId());
+//        System.out.println("Video Token: " + videoTokenRequestDTO.getVideoToken());
+//
+//        if (isDoctor) {
+//            if (healthOfficerOptional.isPresent()) {
+//                HealthOfficer healthOfficer = healthOfficerOptional.get();
+//                // Set the videoToken on the HealthOfficer entity
+//                healthOfficer.receiveVideoTokenFromDoctor(videoTokenRequestDTO.getVideoToken().toString(), authenticatedDoctor);
+//                // Save the updated HealthOfficer entity
+//                healthOfficerRepository.save(healthOfficer);
+//                return ResponseEntity.ok("Video token saved successfully on HealthOfficer");
+//            } else {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("HealthOfficer not found with the given refId");
+//            }
+//        } else if (isHealthOfficer) {
+//            if (doctorOptional.isPresent()) {
+//                Doctor doctor = doctorOptional.get();
+//                // Set the videoToken on the Doctor entity
+//                doctor.receiveVideoTokenFromHealthOfficer(videoTokenRequestDTO.getVideoToken().toString(), authenticatedHealthOfficer);
+//                // Save the updated Doctor entity
+//                doctorRepository.save(doctor);
+//                return ResponseEntity.ok("Video token saved successfully on Doctor");
+//            } else {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found with the given refId");
+//            }
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authorized");
+//        }
+//    }
+
+
+//    @PostMapping(value = "/saveVideoToken", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<String> saveVideoToken(@RequestHeader("Auth") String jwtToken, @RequestBody VideoTokenRequestDTO videoTokenRequestDTO) {
+//        try {
+//            // Extract username from JWT token
+//            String token = jwtToken.replace("Bearer ", "");
+//            String username = jwtHelper.getUsernameFromToken(token);
+//
+//            // Fetch authenticated user's roles
+//            Doctor authenticatedDoctor = doctorRepository.findByEmailDirect(username);
+//            HealthOfficer authenticatedHealthOfficer = healthOfficerRepository.findByEmailDirect(username);
+//
+//            // Determine user role
+//            boolean isDoctor = authenticatedDoctor != null && authenticatedDoctor.getRoles().stream().anyMatch(role -> role.hasRole("DOCTOR"));
+//            boolean isHealthOfficer = authenticatedHealthOfficer != null && authenticatedHealthOfficer.getRoles().stream().anyMatch(role -> role.hasRole("HEALTH_OFFICER"));
+//
+//            if (isDoctor) {
+//                return handleDoctorCase(videoTokenRequestDTO, authenticatedDoctor);
+//            } else if (isHealthOfficer) {
+//                return handleHealthOfficerCase(videoTokenRequestDTO, authenticatedHealthOfficer);
+//            } else {
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authorized");
+//            }
+//        } catch (Exception e) {
+//            // Log the error and return a generic error message
+////            logger.error("Error saving video token", e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while processing the request");
+//        }
+//    }
+//
+//    private ResponseEntity<String> handleDoctorCase(VideoTokenRequestDTO videoTokenRequestDTO, Doctor authenticatedDoctor) {
+//        Optional<HealthOfficer> healthOfficerOptional = healthOfficerRepository.findById(videoTokenRequestDTO.getRefId());
+//        if (healthOfficerOptional.isPresent()) {
+//            HealthOfficer healthOfficer = healthOfficerOptional.get();
+//            healthOfficer.receiveVideoTokenFromDoctor(videoTokenRequestDTO.getVideoToken(), authenticatedDoctor);
+//            healthOfficerRepository.save(healthOfficer);
+//            return ResponseEntity.ok("Video token saved successfully on HealthOfficer");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("HealthOfficer not found with the given refId");
+//        }
+//    }
+//
+//    private ResponseEntity<String> handleHealthOfficerCase(VideoTokenRequestDTO videoTokenRequestDTO, HealthOfficer authenticatedHealthOfficer) {
+//        Optional<Doctor> doctorOptional = doctorRepository.findById(videoTokenRequestDTO.getRefId());
+//        if (doctorOptional.isPresent()) {
+//            Doctor doctor = doctorOptional.get();
+//            doctor.receiveVideoTokenFromHealthOfficer(videoTokenRequestDTO.getVideoToken(), authenticatedHealthOfficer);
+//            doctorRepository.save(doctor);
+//            return ResponseEntity.ok("Video token saved successfully on Doctor");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found with the given refId");
+//        }
+//    }
+
     @PostMapping(value = "/saveVideoToken", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> saveVideoToken(@RequestHeader("Auth") String jwtToken, @RequestBody VideoTokenRequestDTO videoTokenRequestDTO) {
         // Extract username from JWT token
         String token = jwtToken.replace("Bearer ", "");
         String username = jwtHelper.getUsernameFromToken(token);
 
-        // Fetch authenticated user's roles
+        // Fetch authenticated user details
         Doctor authenticatedDoctor = doctorRepository.findByEmailDirect(username);
         HealthOfficer authenticatedHealthOfficer = healthOfficerRepository.findByEmailDirect(username);
 
-        // Determine if the authenticated user is a Doctor or HealthOfficer
-        boolean isDoctor = authenticatedDoctor != null && authenticatedDoctor.getRoles().stream().anyMatch(role -> role.hasRole("DOCTOR"));
-        boolean isHealthOfficer = authenticatedHealthOfficer != null && authenticatedHealthOfficer.getRoles().stream().anyMatch(role -> role.hasRole("HEALTH_OFFICER"));
-
-        Optional<Doctor> doctorOptional = doctorRepository.findById(videoTokenRequestDTO.getRefId());
-        Optional<HealthOfficer> healthOfficerOptional = healthOfficerRepository.findById(videoTokenRequestDTO.getRefId());
+        // Determine user role
+        boolean isDoctor = authenticatedDoctor != null && hasRole(authenticatedDoctor.getRoles(), "DOCTOR");
+        boolean isHealthOfficer = authenticatedHealthOfficer != null && hasRole(authenticatedHealthOfficer.getRoles(), "HEALTH_OFFICER");
 
         if (isDoctor) {
-            if (healthOfficerOptional.isPresent()) {
-                HealthOfficer healthOfficer = healthOfficerOptional.get();
-                // Set the videoToken on the HealthOfficer entity
-                healthOfficer.receiveVideoTokenFromDoctor(videoTokenRequestDTO.getVideoToken(), authenticatedDoctor);
-                // Save the updated HealthOfficer entity
-                healthOfficerRepository.save(healthOfficer);
-                return ResponseEntity.ok("Video token saved successfully on HealthOfficer");
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("HealthOfficer not found with the given refId");
-            }
+            return handleDoctorToken(videoTokenRequestDTO, authenticatedDoctor);
         } else if (isHealthOfficer) {
-            if (doctorOptional.isPresent()) {
-                Doctor doctor = doctorOptional.get();
-                // Set the videoToken on the Doctor entity
-                doctor.receiveVideoTokenFromHealthOfficer(videoTokenRequestDTO.getVideoToken(), authenticatedHealthOfficer);
-                // Save the updated Doctor entity
-                doctorRepository.save(doctor);
-                return ResponseEntity.ok("Video token saved successfully on Doctor");
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found with the given refId");
-            }
+            return handleHealthOfficerToken(videoTokenRequestDTO, authenticatedHealthOfficer);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authorized");
         }
     }
+
+    private boolean hasRole(Set<Role> roles, String roleName) {
+        return roles.stream().anyMatch(role -> role.hasRole(roleName));
+    }
+
+    private ResponseEntity<String> handleDoctorToken(VideoTokenRequestDTO videoTokenRequestDTO, Doctor authenticatedDoctor) {
+        Optional<HealthOfficer> healthOfficerOptional = healthOfficerRepository.findById(videoTokenRequestDTO.getRefId());
+
+        if (healthOfficerOptional.isPresent()) {
+            HealthOfficer healthOfficer = healthOfficerOptional.get();
+            healthOfficer.receiveVideoTokenFromDoctor(videoTokenRequestDTO.getVideoToken().toString(), authenticatedDoctor);
+            healthOfficerRepository.save(healthOfficer);
+            return ResponseEntity.ok("Video token saved successfully on HealthOfficer");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("HealthOfficer not found with the given refId");
+        }
+    }
+
+    private ResponseEntity<String> handleHealthOfficerToken(VideoTokenRequestDTO videoTokenRequestDTO, HealthOfficer authenticatedHealthOfficer) {
+        Optional<Doctor> doctorOptional = doctorRepository.findById(videoTokenRequestDTO.getRefId());
+
+        if (doctorOptional.isPresent()) {
+            Doctor doctor = doctorOptional.get();
+            doctor.receiveVideoTokenFromHealthOfficer(videoTokenRequestDTO.getVideoToken().toString(), authenticatedHealthOfficer);
+            doctorRepository.save(doctor);
+            return ResponseEntity.ok("Video token saved successfully on Doctor");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found with the given refId");
+        }
+    }
+
 
 
 //    @PostMapping(value = "/saveVideoToken", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

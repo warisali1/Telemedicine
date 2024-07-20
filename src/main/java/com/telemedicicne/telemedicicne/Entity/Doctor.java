@@ -39,6 +39,8 @@ public class Doctor implements UserDetails {
     private String password;
     private String type;//Health officer or Doctor
 
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String videoToken;
 //    private Long refId;
 
